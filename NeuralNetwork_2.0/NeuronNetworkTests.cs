@@ -39,7 +39,26 @@ namespace NeuralNetwork_2._0
             //    { 1, 1, 1, 1 }
             //};
 
-            List<double> outputs = new List<double> {0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1 };
+            List<double> outputs = new List<double> { 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1 };
+            //List<List<double>> outputs = new List<List<double>>
+            //{
+            //    new List<double>  { 0 },
+            //    new List<double>  { 0 },
+            //    new List<double>  { 1 },
+            //    new List<double>  { 0 },
+            //    new List<double>  { 0 },
+            //    new List<double>  { 0 },
+            //    new List<double>  { 1 },
+            //    new List<double>  { 0 },
+            //    new List<double>  { 1 },
+            //    new List<double>  { 1 },
+            //    new List<double>  { 1 },
+            //    new List<double>  { 1 },
+            //    new List<double>  { 1 },
+            //    new List<double>  { 0 },
+            //    new List<double>  { 1 },
+            //    new List<double>  { 1 }
+            //};
 
             List<List<double>> inputs = new List<List<double>>
             {
