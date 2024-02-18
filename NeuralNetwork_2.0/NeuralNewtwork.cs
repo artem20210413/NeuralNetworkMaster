@@ -22,32 +22,32 @@ namespace NeuralNetwork_2._0
             CreateOutputLayer();
         }
 
-        public Neuron Predict(List<double> inputSignals)
+        public Layer Predict(List<double> inputSignals) // Предсказывать
         {
             SendSignalsToInputNeurons(inputSignals);
             FeedForwardAllLayersAfterInput();
 
-            return (Topology.OutputCount == 1)
-                ? Layers.Last().Neurons[0]
-                : Layers.Last().Neurons.OrderByDescending(n => n.Output).First();
+            return Layers.Last();
+            //return (Topology.OutputCount == 1)
+            //    ? Layers.Last().Neurons[0]
+            //    : Layers.Last().Neurons.OrderByDescending(n => n.Output).First();
         }
 
-        public double Learn(List<double> expected, List<List<double>> inputs, int epoch)
+        public double Learn(List<List<double>> expected, List<List<double>> inputs, int epoch) // Учиться
         {
             var error = 0.0;
             for (int i = 0; i < epoch; i++)
             {
                 for (int j = 0; j < expected.Count; j++)
                 {
-                    var output = expected[j];
-                    var input = GetRow(inputs, j);
+                        var output = GetRow(expected, j);
+                        var input = GetRow(inputs, j);
 
-                    error += Backpropagation(output, input);
+                        error += Backpropagation(output, input);
                 }
             }
 
-            var result = error / epoch;
-            return result;
+            return error / epoch;
         }
 
         public static List<double> GetRow(List<List<double>> matrix, int row)
@@ -134,15 +134,60 @@ namespace NeuralNetwork_2._0
             return result;
         }
 
-        private double Backpropagation(double expected, List<double> inputs)
-        {
-            var actual = Predict(inputs).Output;
+        //private double Backpropagation(double expected, List<double> inputs)
+        //{
+        //    var layerLast = Predict(inputs);
+        //      var layerLastNeuron =  (Topology.OutputCount == 1)
+        //        ? layerLast.Neurons[0]
+        //        : layerLast.Neurons.OrderByDescending(n => n.Output).First();
 
-            var difference = actual - expected;
+        //    var actual = layerLastNeuron.Output;
+
+        //    var difference = actual - expected;
+
+        //    foreach (var neuron in Layers.Last().Neurons)
+        //    {
+        //        neuron.Learn(difference, Topology.LearningRate);
+        //    }
+
+        //    for (int j = Layers.Count - 2; j >= 0; j--)
+        //    {
+        //        var layer = Layers[j];
+        //        var previousLayer = Layers[j + 1];
+
+        //        for (int i = 0; i < layer.NeuronCount; i++)
+        //        {
+        //            var neuron = layer.Neurons[i];
+
+        //            for (int k = 0; k < previousLayer.NeuronCount; k++)
+        //            {
+        //                var previousNeuron = previousLayer.Neurons[k];
+        //                var error = previousNeuron.Weights[i] * previousNeuron.Delta;
+        //                neuron.Learn(error, Topology.LearningRate);
+        //            }
+        //        }
+        //    }
+
+        //    return Math.Pow(difference, 2);
+        //}
+
+        private double Backpropagation(List<double> expected, List<double> inputs)
+        {
+            var layerLast = Predict(inputs);
+
+            var differences = new List<double>();
+
+            for (int i = 0; i < layerLast.Neurons.Count; i++)
+            {
+                differences.Add(layerLast.Neurons[i].Output - expected[i]);
+            }
 
             foreach (var neuron in Layers.Last().Neurons)
             {
-                neuron.Learn(difference, Topology.LearningRate);
+                for (int i = 0; i < differences.Count; i++)
+                {
+                    neuron.Learn(differences[i], Topology.LearningRate);
+                }
             }
 
             for (int j = Layers.Count - 2; j >= 0; j--)
@@ -158,12 +203,14 @@ namespace NeuralNetwork_2._0
                     {
                         var previousNeuron = previousLayer.Neurons[k];
                         var error = previousNeuron.Weights[i] * previousNeuron.Delta;
+
                         neuron.Learn(error, Topology.LearningRate);
                     }
                 }
             }
 
-            return Math.Pow(difference, 2);
+            double sumSquaredError = differences.Sum(difference => Math.Pow(difference, 2));
+            return sumSquaredError / differences.Count;
         }
 
         private void FeedForwardAllLayersAfterInput()

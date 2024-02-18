@@ -39,26 +39,26 @@ namespace NeuralNetwork_2._0
             //    { 1, 1, 1, 1 }
             //};
 
-            List<double> outputs = new List<double> { 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1 };
-            //List<List<double>> outputs = new List<List<double>>
-            //{
-            //    new List<double>  { 0 },
-            //    new List<double>  { 0 },
-            //    new List<double>  { 1 },
-            //    new List<double>  { 0 },
-            //    new List<double>  { 0 },
-            //    new List<double>  { 0 },
-            //    new List<double>  { 1 },
-            //    new List<double>  { 0 },
-            //    new List<double>  { 1 },
-            //    new List<double>  { 1 },
-            //    new List<double>  { 1 },
-            //    new List<double>  { 1 },
-            //    new List<double>  { 1 },
-            //    new List<double>  { 0 },
-            //    new List<double>  { 1 },
-            //    new List<double>  { 1 }
-            //};
+            //List<double> outputs = new List<double> { 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1 };
+            List<List<double>> outputs = new List<List<double>>
+            {
+                new List<double>  { 0,1},
+                new List<double>  { 0,1},
+                new List<double>  { 1,1},
+                new List<double>  { 0,1},
+                new List<double>  { 0,1},
+                new List<double>  { 0,1},
+                new List<double>  { 1,1},
+                new List<double>  { 0,1},
+                new List<double>  { 1,1},
+                new List<double>  { 1,1},
+                new List<double>  { 1,1},
+                new List<double>  { 1,1},
+                new List<double>  { 1,1},
+                new List<double>  { 0,1},
+                new List<double>  { 1,1},
+                new List<double>  { 1,1}
+            };
 
             List<List<double>> inputs = new List<List<double>>
             {
@@ -96,33 +96,55 @@ namespace NeuralNetwork_2._0
 
             Topology topology = new Topology(
                 4,
-                1,
+                2,
                 0.1,
-                3
+                5,5
                 );
             topology.EnumActivationFunction = EnumActivationFunction.Sigmoid;
 
             NeuralNetwork neuralNetwork = new NeuralNetwork(topology);
-            double difference = neuralNetwork.Learn(outputs, inputs, 10000);
+            double difference = neuralNetwork.Learn(outputs, inputs, 1000);
 
 
-            List<double> results = new List<double>();
+            List<List<double>> results = new List<List<double>>();
             for (int i = 0; i < outputs.Count; i++)
             {
                 var row = NeuralNetwork.GetRow(inputs, i);
-                var res = neuralNetwork.Predict(row).Output;
-                results.Add(res);
+                var res = neuralNetwork.Predict(row).Neurons;
+
+                List<double> rowOutput = new List<double>();
+                foreach ( var r in res)
+                {
+                    rowOutput.Add(r.Output);
+                }
+
+                results.Add(rowOutput);
             }
 
             double sumSquaredError = 0.0;
-            for (int i = 0; i < results.Count; i++)
+            for (int i = 0; i < outputs.Count; i++)
             {
                 //if (i % 20 != 0) continue;
-                var expected = Math.Round(outputs[i], 2);
-                var actual = Math.Round(results[i], 2);
-                Console.WriteLine($"очікуваний: {expected}, фактичний: {actual}");
-                double error = expected - actual;
-                sumSquaredError += error * error;
+
+                for (int j = 0; j < outputs[i].Count; j++)
+                {
+                    var expected = Math.Round(outputs[i][j], 2);
+                    var actual = Math.Round(results[i][j], 2);
+                    Console.Write($"очікуваний[{j}]: {expected}\t");
+                    double error = expected - actual;
+                    sumSquaredError += error * error;
+                }
+
+                Console.Write("|\t");
+
+                for (int j = 0; j < outputs[i].Count; j++)
+                {
+                    var actual = Math.Round(results[i][j], 2);
+                    Console.Write($"фактичний[{j}]: {actual}\t");
+                }
+
+                Console.WriteLine();
+
             }
 
             double mse = sumSquaredError / results.Count;
