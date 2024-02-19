@@ -39,7 +39,7 @@ namespace NeuralNetwork_2._0
             //    { 1, 1, 1, 1 }
             //};
 
-            List<double> outputs = new List<double> { 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1 };
+            //List<double> outputs = new List<double> { 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1 };
             //List<List<double>> outputs = new List<List<double>>
             //{
             //    new List<double>  { 0 },
@@ -60,51 +60,66 @@ namespace NeuralNetwork_2._0
             //    new List<double>  { 1 }
             //};
 
-            List<List<double>> inputs = new List<List<double>>
-            {
-                new List<double>  { 0, 0, 0, 0 },
-                new List<double>  { 0, 0, 0, 1 },
-                new List<double>  { 0, 0, 1, 0 },
-                new List<double>  { 0, 0, 1, 1 },
-                new List<double>  { 0, 1, 0, 0 },
-                new List<double>  { 0, 1, 0, 1 },
-                new List<double>  { 0, 1, 1, 0 },
-                new List<double>  { 0, 1, 1, 1 },
-                new List<double>  { 1, 0, 0, 0 },
-                new List<double>  { 1, 0, 0, 1 },
-                new List<double>  { 1, 0, 1, 0 },
-                new List<double>  { 1, 0, 1, 1 },
-                new List<double>  { 1, 1, 0, 0 },
-                new List<double>  { 1, 1, 0, 1 },
-                new List<double>  { 1, 1, 1, 0 },
-                new List<double>  { 1, 1, 1, 1 }
-            };
+            //List<List<double>> inputs = new List<List<double>>
+            //{
+            //    new List<double>  { 0, 0, 0, 0 },
+            //    new List<double>  { 0, 0, 0, 1 },
+            //    new List<double>  { 0, 0, 1, 0 },
+            //    new List<double>  { 0, 0, 1, 1 },
+            //    new List<double>  { 0, 1, 0, 0 },
+            //    new List<double>  { 0, 1, 0, 1 },
+            //    new List<double>  { 0, 1, 1, 0 },
+            //    new List<double>  { 0, 1, 1, 1 },
+            //    new List<double>  { 1, 0, 0, 0 },
+            //    new List<double>  { 1, 0, 0, 1 },
+            //    new List<double>  { 1, 0, 1, 0 },
+            //    new List<double>  { 1, 0, 1, 1 },
+            //    new List<double>  { 1, 1, 0, 0 },
+            //    new List<double>  { 1, 1, 0, 1 },
+            //    new List<double>  { 1, 1, 1, 0 },
+            //    new List<double>  { 1, 1, 1, 1 }
+            //};
 
 
 
 
-            //NeuralNetworkDataLoader neuralNetworkDataLoader = new NeuralNetworkDataLoader("NeuralNetworkData/DataSetOutput_1.xlsx");
-            //var inputsList = neuralNetworkDataLoader.getInputs();
-            //var outputsList = neuralNetworkDataLoader.getOutputs();
+            NeuralNetworkDataLoader neuralnetworkdataloader = new NeuralNetworkDataLoader("NeuralNetworkData/DataSetOutput_1.xlsx");
+            var inputs = neuralnetworkdataloader.getInputs();
+            var outputsList = neuralnetworkdataloader.getOutputs();
+            var outputs = neuralnetworkdataloader.ListDoubleTotoList(outputsList);
 
-            //double[,] inputs = neuralNetworkDataLoader.ProcessListOfLists(inputsList);
-            //double[] outputs = neuralNetworkDataLoader.ProcessListOfLists(outputsList);
+            //double[,] inputs = neuralnetworkdataloader.processlistoflists(inputslist);
+            //double[] outputs = neuralnetworkdataloader.processlistoflists(outputslist);
 
 
-            //neuralNetworkDataLoader.countColumInput,
-            //neuralNetworkDataLoader.countColumOutput,
+
+            double learningRateReadLine;
+            double accuracyReadLine; 
+            int epoch;
+
+            Console.Write("Введите epoch: ");
+            epoch = int.Parse(Console.ReadLine());
+
+            Console.Write("Введите Learning Rate: ");
+            learningRateReadLine = double.Parse(Console.ReadLine());
+
+            Console.Write("Введите Accuracy: ");
+            accuracyReadLine = double.Parse(Console.ReadLine());
+
 
             Topology topology = new Topology(
-                4,
-                1,
-                0.1,
-                2
+                neuralnetworkdataloader.countColumInput,
+                neuralnetworkdataloader.countColumOutput,
+                learningRateReadLine,
+                10,10,10,10
                 );
-            topology.EnumActivationFunction = EnumActivationFunction.Sigmoid;
-            topology.Accuracy = 0.001;
+
+            topology.EnumActivationFunction = EnumActivationFunction.Gaussian;
+            topology.Accuracy = accuracyReadLine;
+
 
             NeuralNetwork neuralNetwork = new NeuralNetwork(topology);
-            double difference = neuralNetwork.Learn(outputs, inputs, 1000000000);
+            double difference = neuralNetwork.Learn(outputs, inputs, epoch);
 
             List<double> results = new List<double>();
             for (int i = 0; i < outputs.Count; i++)
@@ -117,7 +132,7 @@ namespace NeuralNetwork_2._0
             double sumSquaredError = 0.0;
             for (int i = 0; i < results.Count; i++)
             {
-                //if (i % 20 != 0) continue;
+                if (i % 20 != 0) continue;
                 var expected = Math.Round(outputs[i], 2);
                 var actual = Math.Round(results[i], 2);
                 Console.WriteLine($"очікуваний: {expected}, фактичний: {actual}");

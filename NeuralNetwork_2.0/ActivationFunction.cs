@@ -8,14 +8,14 @@ namespace NeuralNetwork_2._0
 {
     public enum EnumActivationFunction
     {
-        Sigmoid,    // Логистическая (Сигмоида или Гладкая ступенька)
-        ReLU,       // Линейный выпрямитель
-        Tanh,       // Гиперболического тангенса
-        SoftPlus,   // SoftPlus
-        Gaussian,   // Гауссова
-        Identical,   // Тождественное
-        LeakyReLU,   // Линейный выпрямитель с «утечкой»
-        Sin,   // Синусоида
+        Sigmoid,        // Логистическая (Сигмоида или Гладкая ступенька)
+        ReLU,           // Линейный выпрямитель
+        Tanh,           // Гиперболического тангенса
+        SoftPlus,       // SoftPlus                                                 оч?куваний: 1,15, фактичний: не число
+        Gaussian,       // Гауссова
+        Identical,      // Тождественное
+        LeakyReLU,      // Линейный выпрямитель с «утечкой»
+        Sin,            // Синусоида
     }
 
     public class ActivationFunction
@@ -128,7 +128,7 @@ namespace NeuralNetwork_2._0
 
         private double Gaussian(double x) // Гауссова
         {
-            return Math.Exp(-(x * x));
+            return Math.Exp(-Math.Pow(x,2));
         }
 
         private double GaussianDx(double x)

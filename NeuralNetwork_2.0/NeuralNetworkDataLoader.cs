@@ -102,6 +102,21 @@ namespace NeuralNetwork_2._0
             return this.data.Select(el => el.outputs).ToList();
         }
 
+        public List<double> ListDoubleTotoList(List<List<double>> listDouble)
+        {
+            List<double> flatList = new List<double>();
+
+            foreach (var sublist in listDouble)
+            {
+                foreach (var value in sublist)
+                {
+                    flatList.Add(value);
+                }
+            }
+
+            return flatList;
+        }
+
         public double[] FlattenList(List<List<double>> listOfLists)
         {
             return listOfLists.SelectMany(list => list).ToArray();

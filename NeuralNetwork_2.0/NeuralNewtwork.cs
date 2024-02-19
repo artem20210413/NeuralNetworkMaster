@@ -47,6 +47,18 @@ namespace NeuralNetwork_2._0
                     error += e;
                     sumSquaredError += Math.Pow(e, 2);
                 }
+
+                if (i % 100 == 1)
+                {
+                    Console.WriteLine($"epoch: {i}");
+
+                    var rand = new Random();
+                    var indexRow = rand.Next(0, expected.Count);
+                    var row = GetRow(inputs, indexRow) ;
+                    var res = this.Predict(row).Output;
+                    Console.WriteLine($"очікуваний: {Math.Round(expected[indexRow], 5)}, фактичний: {Math.Round(res, 5)}");
+
+                }
                 if (sumSquaredError / expected.Count <= Topology.Accuracy) break;
                 //if (Math.Pow(error, 2) / i <= Topology.Accuracy) break;
             }
