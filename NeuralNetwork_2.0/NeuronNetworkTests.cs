@@ -98,13 +98,13 @@ namespace NeuralNetwork_2._0
                 4,
                 1,
                 0.1,
-                3
+                2
                 );
             topology.EnumActivationFunction = EnumActivationFunction.Sigmoid;
+            topology.Accuracy = 0.001;
 
             NeuralNetwork neuralNetwork = new NeuralNetwork(topology);
-            double difference = neuralNetwork.Learn(outputs, inputs, 10000);
-
+            double difference = neuralNetwork.Learn(outputs, inputs, 1000000000);
 
             List<double> results = new List<double>();
             for (int i = 0; i < outputs.Count; i++)
@@ -122,7 +122,7 @@ namespace NeuralNetwork_2._0
                 var actual = Math.Round(results[i], 2);
                 Console.WriteLine($"очікуваний: {expected}, фактичний: {actual}");
                 double error = expected - actual;
-                sumSquaredError += error * error;
+                sumSquaredError += Math.Pow(error,2);
             }
 
             double mse = sumSquaredError / results.Count;

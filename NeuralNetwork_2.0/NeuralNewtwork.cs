@@ -35,15 +35,20 @@ namespace NeuralNetwork_2._0
         public double Learn(List<double> expected, List<List<double>> inputs, int epoch)
         {
             var error = 0.0;
-            for (int i = 0; i < epoch; i++)
+            for (int i = 1; i < epoch + 1; i++)
             {
+                double sumSquaredError = 0.0;
                 for (int j = 0; j < expected.Count; j++)
                 {
                     var output = expected[j];
                     var input = GetRow(inputs, j);
 
-                    error += Backpropagation(output, input);
+                    var e = Backpropagation(output, input);
+                    error += e;
+                    sumSquaredError += Math.Pow(e, 2);
                 }
+                if (sumSquaredError / expected.Count <= Topology.Accuracy) break;
+                //if (Math.Pow(error, 2) / i <= Topology.Accuracy) break;
             }
 
             var result = error / epoch;

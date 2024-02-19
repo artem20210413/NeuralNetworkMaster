@@ -13,8 +13,10 @@ namespace NeuralNetwork_2._0
         public int InputCount { get; }
         public int OutputCount { get; }
         public double LearningRate { get; } // Скорость обучения
+        public double Accuracy = 0.001;
         public List<int> HiddenLayers { get; }
         public EnumActivationFunction EnumActivationFunction = EnumActivationFunction.Sigmoid;
+
 
         public Topology(int inputCount, int outputCount, double learningRate, params int[] layers)
         {
