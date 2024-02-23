@@ -34,6 +34,13 @@ namespace NeuralNetwork_2._0
 
         public double Learn(List<double> expected, List<List<double>> inputs, int epoch)
         {
+            var rand = new Random();
+            var indexRowList = new List<double>();
+            for(int i = 0; i<3; i++)
+                indexRowList.Add(rand.Next(0, expected.Count));
+
+            //var indexRow = rand.Next(0, expected.Count);
+
             var error = 0.0;
             for (int i = 1; i < epoch + 1; i++)
             {
@@ -51,37 +58,31 @@ namespace NeuralNetwork_2._0
                 if (i % 100 == 1)
                 {
                     Console.WriteLine($"epoch: {i}");
-
-                    var rand = new Random();
-                    var indexRow = rand.Next(0, expected.Count);
-                    var row = GetRow(inputs, indexRow) ;
-                    var res = this.Predict(row).Output;
-                    Console.WriteLine($"очікуваний: {Math.Round(expected[indexRow], 5)}, фактичний: {Math.Round(res, 5)}");
+                    foreach(int indexRow in indexRowList)
+                    {
+                        var row = GetRow(inputs, indexRow);
+                        var res = this.Predict(row).Output;
+                        Console.WriteLine($"очікуваний: {Math.Round(expected[indexRow], 5)}, фактичний: {Math.Round(res, 5)}");
+                    }
+                    
 
                 }
-                if (sumSquaredError / expected.Count <= Topology.Accuracy) break;
+                if (sumSquaredError / expected.Count <= Topology.Accuracy && Topology.Accuracy != 0.0) break;
                 //if (Math.Pow(error, 2) / i <= Topology.Accuracy) break;
             }
 
             var result = error / epoch;
+            //var result = error;
             return result;
         }
 
         public static List<double> GetRow(List<List<double>> matrix, int row)
         {
-            //var columns = matrix.GetLength(1);
-            //var array = new double[columns];
-            //for (int i = 0; i < columns; ++i)
-            //    array[i] = matrix[row, i];
-
-            //return array;
-            var columns = matrix[row].Count;
             var list = new List<double>();
 
-            for (int i = 0; i < columns; ++i)
-            {
+            for (int i = 0; i < matrix[row].Count; ++i)
                 list.Add(matrix[row][i]);
-            }
+            
 
             return list;
         }
@@ -208,17 +209,16 @@ namespace NeuralNetwork_2._0
             }
         }
 
-        private void CreateOutputLayer()
+        private void CreateInputLayer()
         {
-            var outputNeurons = new List<Neuron>();
-            var lastLayer = Layers.Last();
-            for (int i = 0; i < Topology.OutputCount; i++)
+            var inputNeurons = new List<Neuron>();
+            for (int i = 0; i < Topology.InputCount; i++)
             {
-                var neuron = new Neuron(lastLayer.NeuronCount, NeuronType.Output, this.Topology);
-                outputNeurons.Add(neuron);
+                var neuron = new Neuron(1, NeuronType.Input, this.Topology);
+                inputNeurons.Add(neuron);
             }
-            var outputLayer = new Layer(outputNeurons, NeuronType.Output);
-            Layers.Add(outputLayer);
+            var inputLayer = new Layer(inputNeurons, NeuronType.Input);
+            Layers.Add(inputLayer);
         }
 
         private void CreateHiddenLayers()
@@ -237,16 +237,17 @@ namespace NeuralNetwork_2._0
             }
         }
 
-        private void CreateInputLayer()
+        private void CreateOutputLayer()
         {
-            var inputNeurons = new List<Neuron>();
-            for (int i = 0; i < Topology.InputCount; i++)
+            var outputNeurons = new List<Neuron>();
+            var lastLayer = Layers.Last();
+            for (int i = 0; i < Topology.OutputCount; i++)
             {
-                var neuron = new Neuron(1, NeuronType.Input, this.Topology);
-                inputNeurons.Add(neuron);
+                var neuron = new Neuron(lastLayer.NeuronCount, NeuronType.Output, this.Topology);
+                outputNeurons.Add(neuron);
             }
-            var inputLayer = new Layer(inputNeurons, NeuronType.Input);
-            Layers.Add(inputLayer);
+            var outputLayer = new Layer(outputNeurons, NeuronType.Output);
+            Layers.Add(outputLayer);
         }
     }
 }

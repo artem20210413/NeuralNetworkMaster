@@ -59,23 +59,25 @@ namespace NeuralNetwork_2._0
                 {
                     List<double> inputs = new List<double>();
                     List<double> outputs = new List<double>();
-                    bool isInput = true;
+                    //bool isInput = true;
+                    int countColum = 0;
 
                     foreach (var cell in worksheet.Cells[row, 1, row, worksheet.Dimension.End.Column])
                     {
-                        if (cell.Start.Column == 1) isInput = true;
+                        if (cell.Start.Column == 1) countColum = 0;
 
                         if (cell.Value == null || cell.Text == this.ioSeparator.ToString())
                         {
-                            isInput = false;
+                            countColum++;
                             continue;
                         }
 
-                        if(isInput) inputs.Add(Convert.ToDouble(cell.Value));
-                        else outputs.Add(Convert.ToDouble(cell.Value));
+                        if (countColum == 0) inputs.Add(Convert.ToDouble(cell.Value));
+                        else if (countColum == 1) outputs.Add(Convert.ToDouble(cell.Value));
+                        else break;
                     }
 
-                    if (inputs.Count == 0) break;
+                    if (inputs.Count == 0 || outputs.Count == 0) break;
 
                     if(row == 2)
                     {
@@ -83,8 +85,7 @@ namespace NeuralNetwork_2._0
                         this.countColumOutput = outputs.Count;
                     }
 
-                    //if(inputs.Count != 0) 
-                        data.Add(new MyDataModel(inputs, outputs));
+                    data.Add(new MyDataModel(inputs, outputs));
                 }
 
                 return data;

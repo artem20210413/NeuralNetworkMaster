@@ -59,24 +59,19 @@ namespace NeuralNetwork_2._0
                 sum += inputs[i] * Weights[i];
             }
 
-            if (NeuronType != NeuronType.Input)
-            {
+            if (NeuronType == NeuronType.Input) 
                 Output = ActivationFunction.Activation(sum);
-                var Output1 = Output;
-            }
-            else
-            {
+            else 
                 Output = sum;
-            }
 
             return Output;
         }
 
         public void Learn(double error, double learningRate)
         {
-            if (NeuronType == NeuronType.Input) return;
+            if (NeuronType == NeuronType.Input ) return; // || NeuronType == NeuronType.Output
 
-            Delta = error * ActivationFunction.ActivationDx(Output); // ActivationDx(Output);
+            Delta = error * ActivationFunction.ActivationDx(Output);
 
             for (int i = 0; i < Weights.Count; i++)
             {

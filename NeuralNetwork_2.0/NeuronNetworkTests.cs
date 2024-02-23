@@ -83,43 +83,24 @@ namespace NeuralNetwork_2._0
 
 
 
-            NeuralNetworkDataLoader neuralnetworkdataloader = new NeuralNetworkDataLoader("NeuralNetworkData/DataSetOutput_1.xlsx");
+            NeuralNetworkDataLoader neuralnetworkdataloader = new NeuralNetworkDataLoader("NeuralNetworkData/DataSetRationing.xlsx");
             var inputs = neuralnetworkdataloader.getInputs();
             var outputsList = neuralnetworkdataloader.getOutputs();
             var outputs = neuralnetworkdataloader.ListDoubleTotoList(outputsList);
-
-            //double[,] inputs = neuralnetworkdataloader.processlistoflists(inputslist);
-            //double[] outputs = neuralnetworkdataloader.processlistoflists(outputslist);
-
-
-
-            double learningRateReadLine;
-            double accuracyReadLine; 
-            int epoch;
-
-            Console.Write("Введите epoch: ");
-            epoch = int.Parse(Console.ReadLine());
-
-            Console.Write("Введите Learning Rate: ");
-            learningRateReadLine = double.Parse(Console.ReadLine());
-
-            Console.Write("Введите Accuracy: ");
-            accuracyReadLine = double.Parse(Console.ReadLine());
 
 
             Topology topology = new Topology(
                 neuralnetworkdataloader.countColumInput,
                 neuralnetworkdataloader.countColumOutput,
-                learningRateReadLine,
-                10,10,10,10
+                0.0001, // learningRateReadLine
+                10,10,10,10,10
                 );
 
-            topology.EnumActivationFunction = EnumActivationFunction.Gaussian;
-            topology.Accuracy = accuracyReadLine;
+            topology.EnumActivationFunction = EnumActivationFunction.Sigmoid;
 
 
             NeuralNetwork neuralNetwork = new NeuralNetwork(topology);
-            double difference = neuralNetwork.Learn(outputs, inputs, epoch);
+            double difference = neuralNetwork.Learn(outputs, inputs, 10000);
 
             List<double> results = new List<double>();
             for (int i = 0; i < outputs.Count; i++)
