@@ -59,7 +59,7 @@ namespace NeuralNetwork_2._0
                 sum += inputs[i] * Weights[i];
             }
 
-            if (NeuronType == NeuronType.Input) 
+            if (NeuronType != NeuronType.Input) 
                 Output = ActivationFunction.Activation(sum);
             else 
                 Output = sum;
