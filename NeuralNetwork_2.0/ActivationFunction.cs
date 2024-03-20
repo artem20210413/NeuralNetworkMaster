@@ -16,6 +16,7 @@ namespace NeuralNetwork_2._0
         Identical,      // Тождественное
         LeakyReLU,      // Линейный выпрямитель с «утечкой»
         Sin,            // Синусоида
+        Softmax,            // Softmax
     }
 
     public class ActivationFunction
@@ -48,6 +49,8 @@ namespace NeuralNetwork_2._0
                     return LeakyReLU(x);
                 case EnumActivationFunction.Sin:
                     return Sin(x);
+                case EnumActivationFunction.Softmax:
+                    return Softmax(x);
 
                 default: return Sigmoid(x);
             }
@@ -74,6 +77,8 @@ namespace NeuralNetwork_2._0
                     return LeakyReLUDx(x);
                 case EnumActivationFunction.Sin:
                     return SinDx(x);
+                case EnumActivationFunction.Softmax:
+                    return SoftmaxDx(x);
 
                 default: return SigmoidDx(x);
             }
@@ -166,6 +171,22 @@ namespace NeuralNetwork_2._0
         private double SinDx(double x)
         {
             return Math.Cos(x);
+        }
+
+        private double Softmax(double x)
+        {
+            // Применение Softmax операции к значению x
+            double expX = Math.Exp(x);
+            double softmax = expX / (1 + expX); // Здесь используется формула для Softmax с одним входом
+            return softmax;
+        }
+
+        private double SoftmaxDx(double x)
+        {
+            // Вычисление производной функции Softmax по входному значению x
+            double softmax = Softmax(x);
+            double softmaxDx = softmax * (1 - softmax);
+            return softmaxDx;
         }
 
 

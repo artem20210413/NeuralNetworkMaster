@@ -27,24 +27,24 @@ namespace NeuralNetwork_2._0
             SendSignalsToInputNeurons(inputSignals);
             FeedForwardAllLayersAfterInput();
 
-            return (Topology.OutputCount == 1)
-                ? Layers.Last().Neurons[0]
-                : Layers.Last().Neurons.OrderByDescending(n => n.Output).First();
+            return Layers.Last().Neurons[0];
+            //return (Topology.OutputCount == 1)
+            //    ? Layers.Last().Neurons[0]
+            //    : Layers.Last().Neurons.OrderByDescending(n => n.Output).First();
         }
 
         public double Learn(List<double> expected, List<List<double>> inputs, int epoch)
         {
-            var rand = new Random();
-            var indexRowList = new List<double>();
-            for(int i = 0; i<3; i++)
-                indexRowList.Add(rand.Next(0, expected.Count));
+            List<double> indexRowList = this.getRandomRows(expected, 5);
 
-            //var indexRow = rand.Next(0, expected.Count);
+            var sumError = 0.0; 
+            //var sumSquaredError = 0.0; 
+            long currentEpoch = 1;
 
-            var error = 0.0;
-            for (int i = 1; i < epoch + 1; i++)
+            while (epoch == 0 || currentEpoch <= epoch)
             {
-                double sumSquaredError = 0.0;
+                var error = 0.0;
+
                 for (int j = 0; j < expected.Count; j++)
                 {
                     var output = expected[j];
@@ -52,28 +52,47 @@ namespace NeuralNetwork_2._0
 
                     var e = Backpropagation(output, input);
                     error += e;
-                    sumSquaredError += Math.Pow(e, 2);
                 }
 
-                if (i % 100 == 1)
-                {
-                    Console.WriteLine($"epoch: {i}");
-                    foreach(int indexRow in indexRowList)
-                    {
-                        var row = GetRow(inputs, indexRow);
-                        var res = this.Predict(row).Output;
-                        Console.WriteLine($"очікуваний: {Math.Round(expected[indexRow], 5)}, фактичний: {Math.Round(res, 5)}");
-                    }
-                    
+                this.preliminaryResultConsole(currentEpoch, indexRowList, inputs, expected, 1000);
 
-                }
-                if (sumSquaredError / expected.Count <= Topology.Accuracy && Topology.Accuracy != 0.0) break;
-                //if (Math.Pow(error, 2) / i <= Topology.Accuracy) break;
+                
+                double currentError = error / expected.Count;
+                sumError += currentError;
+                //double squaredError = Math.Pow(sumError, 2);
+                //sumSquaredError += squaredError;
+
+                if (Math.Sqrt(currentError) <= Topology.Accuracy && Topology.Accuracy != 0.0) break;
+
+                currentEpoch++;
             }
 
-            var result = error / epoch;
-            //var result = error;
-            return result;
+            //return sumSquaredError / epoch;
+            //return Math.Pow(sumError / epoch, 2);//OR
+            return sumError / epoch; //OR
+        }
+
+        private void preliminaryResultConsole(long currentEpoch, List<double> indexRowList, List<List<double>> inputs, List<double> expected, int multiplicity = 100)
+        {
+            if (currentEpoch % multiplicity == 1)
+            {
+                Console.WriteLine($"currentEpoch: {currentEpoch}");
+                foreach (int indexRow in indexRowList)
+                {
+                    var row = GetRow(inputs, indexRow);
+                    var res = this.Predict(row).Output;
+                    Console.WriteLine($"очікуваний: {Math.Round(expected[indexRow], 15)}, фактичний: {Math.Round(res, 15)}");
+                }
+            }
+        }
+        private List<double> getRandomRows(List<double> expected, int count = 3)
+        {
+            var rand = new Random();
+            var indexRowList = new List<double>();
+            for (int i = 0; i < count; i++)
+                indexRowList.Add(rand.Next(0, expected.Count));
+
+            return indexRowList;
         }
 
         public static List<double> GetRow(List<List<double>> matrix, int row)

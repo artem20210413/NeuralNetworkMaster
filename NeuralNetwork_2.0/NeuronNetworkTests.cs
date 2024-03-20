@@ -92,15 +92,15 @@ namespace NeuralNetwork_2._0
             Topology topology = new Topology(
                 neuralnetworkdataloader.countColumInput,
                 neuralnetworkdataloader.countColumOutput,
-                0.0001, // learningRateReadLine
-                10,10,10,10,10
+                0.00001, // learningRate
+               4,4,3,2
                 );
 
             topology.EnumActivationFunction = EnumActivationFunction.Sigmoid;
-
+            //topology.Accuracy = 0.001;
 
             NeuralNetwork neuralNetwork = new NeuralNetwork(topology);
-            double difference = neuralNetwork.Learn(outputs, inputs, 10000);
+            double difference = neuralNetwork.Learn(outputs, inputs, 10000000);
 
             List<double> results = new List<double>();
             for (int i = 0; i < outputs.Count; i++)
@@ -110,18 +110,24 @@ namespace NeuralNetwork_2._0
                 results.Add(res);
             }
 
-            double sumSquaredError = 0.0;
+
+            Console.WriteLine();
+            Console.WriteLine();
+            //double sumSquaredError = 0.0;
+            double sumError = 0.0;
             for (int i = 0; i < results.Count; i++)
             {
-                if (i % 20 != 0) continue;
-                var expected = Math.Round(outputs[i], 2);
-                var actual = Math.Round(results[i], 2);
+                if (i % 1 != 0) continue;
+                var expected = Math.Round(outputs[i], 10);
+                var actual = Math.Round(results[i], 10);
                 Console.WriteLine($"очікуваний: {expected}, фактичний: {actual}");
-                double error = expected - actual;
-                sumSquaredError += Math.Pow(error,2);
+                double error = actual - expected;
+                //sumSquaredError += Math.Pow(error, 2);
+                sumError += error;
             }
 
-            double mse = sumSquaredError / results.Count;
+            double mse = Math.Pow(sumError / results.Count, 2);
+            //double mse = sumSquaredError / results.Count;
             double accuracy = 100.0 - (mse * 100.0);
 
             Console.WriteLine();
