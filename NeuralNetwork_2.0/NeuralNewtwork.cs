@@ -10,16 +10,21 @@ namespace NeuralNetwork_2._0
     {
         public Topology Topology { get; }
         public List<Layer> Layers { get; }
+        private SaveWeights saveWeights;
+        public long epochs { get; private set; }
 
         public NeuralNetwork(Topology topology)
         {
+            epochs = 0;
             Topology = topology;
 
             Layers = new List<Layer>();
+            saveWeights = new SaveWeights(topology);
 
             CreateInputLayer();
             CreateHiddenLayers();
             CreateOutputLayer();
+            LoadWeight();
         }
 
         public Neuron Predict(List<double> inputSignals)
@@ -35,14 +40,21 @@ namespace NeuralNetwork_2._0
 
         public double Learn(List<double> expected, List<List<double>> inputs, int epoch)
         {
-            List<double> indexRowList = this.getRandomRows(expected, 5);
+            List<double> indexRowList = this.getRandomRows(expected, 3);
 
-            var sumError = 0.0; 
-            //var sumSquaredError = 0.0; 
+            double sumError = 0.0; 
             long currentEpoch = 1;
 
             while (epoch == 0 || currentEpoch <= epoch)
             {
+
+                if (Console.KeyAvailable && Console.ReadKey(intercept: true).KeyChar == 'q')  // Проверка наличия нажатия клавиши
+                {
+                    Console.WriteLine("Навчання перервано користувачем.");
+                    break;  // Выход из цикла
+
+                }
+
                 var error = 0.0;
 
                 for (int j = 0; j < expected.Count; j++)
@@ -57,19 +69,18 @@ namespace NeuralNetwork_2._0
                 this.preliminaryResultConsole(currentEpoch, indexRowList, inputs, expected, 1000);
 
                 
-                double currentError = error / expected.Count;
+                double currentError =   Math.Sqrt( Math.Pow(error,2) / expected.Count);
                 sumError += currentError;
-                //double squaredError = Math.Pow(sumError, 2);
-                //sumSquaredError += squaredError;
 
                 if (Math.Sqrt(currentError) <= Topology.Accuracy && Topology.Accuracy != 0.0) break;
 
                 currentEpoch++;
+                epochs++;
             }
 
-            //return sumSquaredError / epoch;
-            //return Math.Pow(sumError / epoch, 2);//OR
-            return sumError / epoch; //OR
+            saveWeights.saveWeights(this, epoch, epochs);
+
+            return Math.Sqrt(Math.Pow(sumError, 2) / epoch);
         }
 
         private void preliminaryResultConsole(long currentEpoch, List<double> indexRowList, List<List<double>> inputs, List<double> expected, int multiplicity = 100)
@@ -267,6 +278,29 @@ namespace NeuralNetwork_2._0
             }
             var outputLayer = new Layer(outputNeurons, NeuronType.Output);
             Layers.Add(outputLayer);
+        }
+
+        private void LoadWeight() {
+            if (!saveWeights.isSavedOne()) return;
+
+            epochs = saveWeights.epochs;
+            List<double> weights = saveWeights.weights;
+
+            foreach (Layer layer in Layers)
+            {
+                foreach (Neuron neuron in layer.Neurons)
+                {
+                    List<double> neuronWeights = new List<double>();
+                    for (int i = 0; i < neuron.Weights.Count; i++)
+                    {
+                        neuronWeights.Add(weights[0]); // Получаем первый элемент списка
+                        weights.RemoveAt(0);
+                    }
+
+                    neuron.LoadWeights(neuronWeights);
+                }
+            }
+
         }
     }
 }

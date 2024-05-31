@@ -8,15 +8,15 @@ namespace NeuralNetwork_2._0
 {
     public enum EnumActivationFunction
     {
-        Sigmoid,        // Логистическая (Сигмоида или Гладкая ступенька)
-        ReLU,           // Линейный выпрямитель
-        Tanh,           // Гиперболического тангенса
-        SoftPlus,       // SoftPlus                                                 оч?куваний: 1,15, фактичний: не число
-        Gaussian,       // Гауссова
-        Identical,      // Тождественное
-        LeakyReLU,      // Линейный выпрямитель с «утечкой»
-        Sin,            // Синусоида
-        Softmax,            // Softmax
+        Sigmoid,    // Логистическая (Сигмоида или Гладкая ступенька)
+        ReLU,       // Линейный выпрямитель
+        Tanh,       // Гиперболического тангенса
+        SoftPlus,   // SoftPlus                                                 оч?куваний: 1,15, фактичний: не число
+        Gaussian,   // Гауссова
+        Identical,  // Тождественное
+        LeakyReLU,  // Линейный выпрямитель с «утечкой»
+        Sin,        // Синусоида
+        Softmax,    // Softmax
     }
 
     public class ActivationFunction

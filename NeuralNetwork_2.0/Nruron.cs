@@ -10,7 +10,7 @@ namespace NeuralNetwork_2._0
 
     internal class Neuron
     {
-        public List<double> Weights { get; }
+        public List<double> Weights { get; set; }
         public List<double> Inputs { get; }
         public NeuronType NeuronType { get; }
         public double Output { get; private set; }
@@ -47,6 +47,11 @@ namespace NeuralNetwork_2._0
                 Inputs.Add(0);
             }
         }
+        public void LoadWeights(List<double> weights)
+        {
+            Weights = weights;
+        }
+
         private double HeInitializationInitWeightsRandomValue()
         {
             double scale = this.Inputs.Count != 0
@@ -95,6 +100,7 @@ namespace NeuralNetwork_2._0
                 var input = Inputs[i];
 
                 var newWeigth = weight - input * Delta * learningRate;
+
                 Weights[i] = newWeigth;
             }
         }

@@ -98,13 +98,30 @@ namespace NeuralNetwork_2._0
             return this.data.Select(el => el.inputs).ToList();
 
         }
+
         public List<List<double>> getOutputs()
         {
             return this.data.Select(el => el.outputs).ToList();
         }
 
-        public List<double> ListDoubleTotoList(List<List<double>> listDouble)
+        public List<double> ListDoubleTotoList(List<List<double>> listDouble)//old
         {
+            List<double> flatList = new List<double>();
+
+            foreach (var sublist in listDouble)
+            {
+                foreach (var value in sublist)
+                {
+                    flatList.Add(value);
+                }
+            }
+
+            return flatList;
+        }
+
+        public List<double> getOutputsList()
+        {
+            List<List<double>> listDouble = getOutputs();
             List<double> flatList = new List<double>();
 
             foreach (var sublist in listDouble)

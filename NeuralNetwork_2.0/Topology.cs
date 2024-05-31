@@ -12,8 +12,9 @@ namespace NeuralNetwork_2._0
     {
         public int InputCount { get; }
         public int OutputCount { get; }
-        public double LearningRate { get; } // Скорость обучения
+        public double LearningRate { get; set; } // Скорость обучения
         public double Accuracy = 0.0;
+        public bool ResetSave = false; //true - delete current file
         public List<int> HiddenLayers { get; }
         public EnumActivationFunction EnumActivationFunction = EnumActivationFunction.Sigmoid;
 
@@ -25,6 +26,17 @@ namespace NeuralNetwork_2._0
             LearningRate = learningRate;
             HiddenLayers = new List<int>();
             HiddenLayers.AddRange(layers); // количество нейронов в слое
+        }
+
+
+        public void consoleInfo()
+        {
+            Console.WriteLine( $"Кількість вхідних нейронов:  {InputCount}");
+            string hiddenLayersString = string.Join(", ", HiddenLayers);
+            Console.WriteLine( $"Скриті слої та нейрони:  {hiddenLayersString}");
+            Console.WriteLine( $"Кількість вихідних нейронов:  {OutputCount}");
+            Console.WriteLine( $"Швидкість навчання:  {LearningRate}");
+            Console.WriteLine( $"Функція активації:  {Convert.ToString(EnumActivationFunction)}");
         }
     }
 }

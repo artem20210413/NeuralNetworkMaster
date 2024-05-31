@@ -91,11 +91,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivationFunction.cs" />
+    <Compile Include="CalculationW.cs" />
     <Compile Include="Layer.cs" />
     <Compile Include="NeuralNetworkDataLoader.cs" />
     <Compile Include="NeuralNewtwork.cs" />
     <Compile Include="NeuronNetworkTests.cs" />
     <Compile Include="NeuronType.cs" />
+    <Compile Include="Rationing.cs" />
     <Compile Include="Nruron.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -104,6 +106,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="SaveWeights.cs" />
     <Compile Include="Topology.cs" />
   </ItemGroup>
   <ItemGroup>
